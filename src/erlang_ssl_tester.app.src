@@ -1,0 +1,12 @@
+{application, erlang_ssl_tester,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { erlang_ssl_tester_app, []}},
+  {env, []}
+ ]}.
