@@ -83,6 +83,16 @@ default_opts() ->
      {certfile, "../test/ssl/server.crt"},
      {keyfile, "../test/ssl/server.key"},
      {versions, [get(ssl_version)]}
+     |
+     case support_partial_chain() of
+         true ->
+             [{partial_chain, fun(Chain) ->
+                                      [DerCert|_Rest] = Chain,
+                                      {trusted_ca, DerCert}
+                              end}];
+         false ->
+             []
+     end
     ].
 
 require_cert_opts() ->
@@ -209,3 +219,11 @@ ensure_all_started() ->
     application:start(asn1),
     application:start(public_key),
     application:start(ssl).
+
+support_partial_chain() ->
+    {ok, VSN} = application:get_key(ssl, vsn),
+    VSNTuple = list_to_tuple(
+                 [list_to_integer(T)
+                  || T <- string:tokens(VSN, ".")]),
+    VSNTuple >= {5,3,6}.
+
